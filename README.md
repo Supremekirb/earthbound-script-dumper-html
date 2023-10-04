@@ -1,6 +1,9 @@
-# earthbound-script-dumper
-An Earthbound/Mother 2 text script dumper that aims for a human readable format
+# earthbound-script-dumper-html
+An Earthbound/Mother 2 text script dumper that outputs in HTML.
 
+The output is just a long HMTL fragment. You'll want to insert it into a page yourself. You might want to use script.css in that page, at least as a start.
+
+Also note that, due to this just being a quick hack, the html is a bit sloppy. Specifically there's an extra </section> at the start and no closing tag on the final <section>.
 
 ## Running
 This program requires Python 3.
