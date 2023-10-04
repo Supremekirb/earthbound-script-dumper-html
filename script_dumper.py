@@ -57,11 +57,11 @@ class ScriptDumper(object):
         if addr not in self.symbols:
             self.add_new_label(addr)
 
-        return self.symbols[addr].label
+        return '<a class="label-link" href="#${:06X}">{}</a>'.format(addr, self.symbols[addr].label)
 
     def read_flag(self):
         flag_id = self.read_int(2)
-        return constants.FLAG_NAMES.get(flag_id, 'flag {}'.format(flag_id))
+        return constants.FLAG_NAMES.get(flag_id, '<span class="flag">flag {}</span>'.format(flag_id))
 
     def read_stat(self):
         stat_id = self.read_int(1)
@@ -456,7 +456,7 @@ class ScriptDumper(object):
 
         # Whew, that was a lot of checks!
 
-        to_write = sc_name
+        to_write = '<span class="control-code">' + sc_name
         if args:
             to_write += '({})'.format(', '.join(str(arg) for arg in args))
 
@@ -468,15 +468,12 @@ class ScriptDumper(object):
         elif self.inside_string:
             self.inside_string = False
             to_write = '" ' + to_write
-        else:
-            line_break = True
-            self.was_linebreak = True
+        to_write += '</span>'
 
         if self.should_add_label:
-            to_write += '\n\n'
             self.was_linebreak = True
         elif line_break:
-            to_write += '\n'
+            to_write += '<br>\n'
 
         return to_write
 
@@ -490,12 +487,14 @@ class ScriptDumper(object):
             while self.address < end:
                 snes_addr = self.snes_address
                 if snes_addr in self.symbols:
-                    self.out_file.write('// ${:06X}\n'.format(snes_addr))
+                    self.out_file.write('</section>')
+                    self.out_file.write('<section id=${:06X}>\n'.format(snes_addr))
+                    self.out_file.write('<span class="label-comment">// ${:06X}</span>\n'.format(snes_addr))
 
                     symbol = self.symbols[snes_addr]
                     if symbol.comment:
                         self.out_file.write('// {}\n'.format(symbol.comment))
-                    self.out_file.write('{}:\n'.format(symbol.label))
+                    self.out_file.write('<a href="#{:06X}" class="label">{}:</a>\n'.format(snes_addr, symbol.label))
                     self.was_linebreak = True
 
                 c = self.read_int(1)
@@ -503,10 +502,6 @@ class ScriptDumper(object):
                 if self.was_linebreak:
                     self.out_file.write('    ')
                     self.was_linebreak = False
-
-                if (0x15 <= c <= 0x17 or c >= 0x20) and not self.inside_string:
-                    self.out_file.write('"')
-                    self.inside_string = True
 
                 if c >= 0x20:
                     self.out_file.write(self.translate_chr(c))
