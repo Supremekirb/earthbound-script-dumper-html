@@ -1,0 +1,16 @@
+
+section {
+  margin: 1rem;
+}
+.control-code {
+  color: #888;
+  margin: 0 0.25rem 0 0.25rem;
+}
+.label {
+  display: block;
+  color: #88F;
+}
+.label-comment {
+  display: block;
+  color: #080;
+}
