@@ -36,6 +36,7 @@ SHOPLOOP_BuyOrSell             = C657BE, Main loop for shops that allow you to b
 SHOPLOOP_Buy                   = C658A9, Main loop for shops that allow you only to buy items
 SHOPLOOP_BuySingle             = C65929, Main loop for shops that allow you only to buy single items
 SHOPSUB_HandleItemBuy          = C659A5, Subroutine for handling item buying
+SHOPSUB_HandleItemSell         = C65AEB, Subroutine for handling item selling
 
 SHOPSUB_CheckMoney             = C65B49, Check if the player has enough money to buy what they selected
 SHOPSUB_SetBoughtWeaponFlag    = C65B59, Sets the "BOUGHT_WEAPON" flag if the item being bought is a weapon
