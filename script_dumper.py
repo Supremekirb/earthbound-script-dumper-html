@@ -23,9 +23,9 @@ SCRIPT_BLOCKS_PER_VERSION = {
 Symbol = namedtuple('Symbol', 'label comment')
 
 class ScriptDumper(object):
-    def __init__(self, rom_file, out_file, version, symbols, header_offset):
+    def __init__(self, rom_file, filenames, version, symbols, groups, header_offset):
         self.rom_file = rom_file
-        self.out_file = out_file
+        self.filenames = filenames
         self.version = version
         self.header_offset = header_offset
         self.dictionary = []  # Populated on "build_dictionary", but only if RomVersion is not JP
@@ -34,7 +34,22 @@ class ScriptDumper(object):
         self.was_linebreak = False
         self.should_add_label = False
         self.symbols = symbols
-
+        self.groups = groups
+        
+        self.files = {} # Populated when extracting the script. K is filename, V is file object
+        self.dummyfile = open('_UNORGANISED.html', 'w')
+        self.dummyfile.write('<link rel="stylesheet" href="script.css"\n>')
+        
+    def get_file_to_write(self):
+        # TODO I wasn't sure where this would need to be recalc'd
+        # so I just kinda threw it everywhere before writing to the file in the dump function
+        # soooooooo... it's slow now! :3
+        for r, f in self.groups.items():
+            if self.snes_address in r:
+                return self.files[f]
+        else:
+            return self.dummyfile
+                
     @property
     def address(self):
         return self.rom_file.tell()
@@ -138,6 +153,12 @@ class ScriptDumper(object):
                 c = self.read_int(1)
 
             self.dictionary.append(''.join(chars))
+        
+    def populate_outfiles(self):
+        for i in self.filenames:
+            file = open("{}.html".format(i), 'w')
+            file.write('<link rel="stylesheet" href="script.css"\n>')
+            self.files[i] = file
 
     def resolve_labels(self):
         # wtf very hacky
@@ -483,34 +504,39 @@ class ScriptDumper(object):
         for start, size in script_blocks:
             end = start + size + self.header_offset
             self.rom_file.seek(start + self.header_offset)
+            file = self.get_file_to_write()
 
             while self.address < end:
                 snes_addr = self.snes_address
+                file = self.get_file_to_write()
                 if snes_addr in self.symbols:
-                    self.out_file.write('</section>')
-                    self.out_file.write('<section id=${:06X}>\n'.format(snes_addr))
-                    self.out_file.write('<span class="label-comment">// ${:06X}</span>\n'.format(snes_addr))
+                    file.write('</section>')
+                    file.write('<section id=${:06X}>\n'.format(snes_addr))
+                    file.write('<span class="label-comment">// ${:06X}</span>\n'.format(snes_addr))
 
                     symbol = self.symbols[snes_addr]
                     if symbol.comment:
-                        self.out_file.write('// {}\n'.format(symbol.comment))
-                    self.out_file.write('<a href="#{:06X}" class="label">{}:</a>\n'.format(snes_addr, symbol.label))
+                        file.write('// {}\n'.format(symbol.comment))
+                    file.write('<a href="#{:06X}" class="label">{}:</a>\n'.format(snes_addr, symbol.label))
                     self.was_linebreak = True
 
                 c = self.read_int(1)
+                file = self.get_file_to_write()
 
                 if self.was_linebreak:
-                    self.out_file.write('    ')
+                    file.write('    ')
                     self.was_linebreak = False
 
                 if c >= 0x20:
-                    self.out_file.write(self.translate_chr(c))
+                    file.write(self.translate_chr(c))
                 elif 0x15 <= c <= 0x17 and self.version != RomVersion.JP:
                     dict_base = (c - 0x15) * 256
-                    self.out_file.write(self.dictionary[dict_base + self.read_int(1)])
+                    file = self.get_file_to_write()
+                    file.write(self.dictionary[dict_base + self.read_int(1)])
                 else:
                     to_write = self.get_script_code_string(c)
-                    self.out_file.write(to_write)
+                    file = self.get_file_to_write()
+                    file.write(to_write)
 
 
 def pc_to_snes(addr):
@@ -583,6 +609,50 @@ def parse_sym_file(sym_file):
 
     return symbols
 
+def parse_groups_file(groups_file):
+    '''Parse the file with info on how to divide the script into different output files.
+    
+        The syntax of the file is:
+            FILENAME = START, END[, START, END...]
+    '''
+    
+    FILENAME_CHARSET = string.ascii_letters + string.digits + "_"
+    
+    groups = {}
+    files = set()
+    for i, line in enumerate(groups_file):
+        pre_comment = line.split(';', maxsplit=1)[0].strip()
+        if '=' in pre_comment:
+            filename, ranges = [s.strip() for s in pre_comment.split('=', maxsplit=1)]
+                
+            if not filename:
+                print('Ignoring line {} from {}: Filename cannot be empty'.format(i+1, groups_file.name, filename), file=sys.stderr)
+                continue
+
+            if not all(c in FILENAME_CHARSET for c in filename):
+                print('Ignoring line {} from {}: Invalid filename ({})'.format(i+1, groups_file.name, filename), file=sys.stderr)
+                continue
+            
+            ranges = ranges.split(",")
+            if len(ranges) % 2:
+                print('Ignoring line {} from {}: Missing closing range ({})'.format(i+1, groups_file.name, filename), file=sys.stderr)
+                continue
+            
+            zipped = list(zip(ranges[::2], ranges[1::2]))
+            
+            print(zipped)
+            for start, end in zipped:
+                start = int(start, 16)
+                end = int(end, 16)
+                groups[range(start, end)] = filename
+            
+            files.add(filename)
+            
+        else:
+            print('Ignoring line {} from {}: Invalid line'.format(i+1, groups_file.name), file=sys.stderr)
+    
+    return groups, files
+
 
 def get_rom_version(rom_file, rom_size, header_offset):
     if rom_size < 0x300000 or (header_offset != 0 and header_offset != 512):
@@ -613,6 +683,8 @@ def run(dumper):
 
     print('Resolving labels...')
     dumper.resolve_labels()
+    print('Opening output files...')
+    dumper.populate_outfiles()
     print('Dumping text script...')
     dumper.dump_text_script()
     print('Done!')
@@ -636,7 +708,10 @@ if __name__ == '__main__':
 
             print('')  # Blank line for extra output niceness
 
-        out_file = open(sys.argv[2], 'w')
+        groups = {}
+        groups_file = open(sys.argv[2], 'r')
+        print("Parsing the groups file...")
+        groups, files = parse_groups_file(groups_file)
 
         symbols = {}
         if len(sys.argv) > 3:
@@ -644,7 +719,7 @@ if __name__ == '__main__':
             print('Parsing the symbols file...')
             symbols = parse_sym_file(sym_file)
 
-        dumper = ScriptDumper(rom_file, out_file, version, symbols, header_offset)
+        dumper = ScriptDumper(rom_file, files, version, symbols, groups, header_offset)
         run(dumper)
     else:
-        print('Usage: {} rom_file out_file [sym_file]'.format(sys.argv[0]))
+        print('Usage: {} rom_file groups_file [sym_file].'.format(sys.argv[0]))

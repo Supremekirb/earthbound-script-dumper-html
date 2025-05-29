@@ -1,0 +1,272 @@
+; This was made by comparing the localisation script source with a CoilSnake dump.
+; Format is `title = start, end[, start, end...]
+
+; TODO - add anything which isn't in the localisation script, and things that I forgot / recorded wrong by mistake
+; This includes all the door scripts, status screen, naming keyboard, probably more
+
+; ==================== AREAS ====================
+; Onett
+;       E01ONET0        E01ONET1          E01ONET2       
+onett = C74BA9, C76F20, C72709, C74BA9, C659C9, C68000
+
+; Twoson
+;        E02TWSN0        E02TWSN1        E02TWSN2
+twoson = C80000, C82105, C953BF, C96D10, C93853, C953BF
+
+; Happy-Happy Village
+;       E03HAPPY
+happy = C98000, C9992F
+
+; Peaceful Rest Valley
+;        E04GRFD
+valley = EF952E, EF9A47
+
+; Threed
+;        E05THRK
+threed = C8D9ED, C8F77D
+
+; Winters
+;         E06WINS
+winters = C6A9F9, C6D19C
+
+; Grapefruit Falls
+;       E07GPFT
+falls = EF617B, EF69A1
+
+; Saturn Valley
+;        E08DOSEI
+saturn = C7E797, C80000
+
+; Dusty Dunes Desert
+;        E09DSRT
+desert = C60000, C62D30
+
+; Fourside
+;          E10FOUR0        E10FOUR1
+fourside = C6D19C, C6F8D9, C82105, C841DE
+
+; Summers
+;         E11SUMS
+summers = C89E1B, C8D9ED
+
+; Dalaam
+;        E12RAMA
+dalaam = C9C991, C9D6F8
+
+; Scaraba
+;         E13SKRB
+scaraba = C56DF3, C57E1C
+
+; Deep Darkness
+;       E14MAKYO
+swamp = C9E37E, C9EE2F
+
+; Tenda Village
+;       E15GUMI
+tenda = C9D6F8, C9E37E
+
+; Lost Underworld
+;            E16DKFD
+underworld = EF57EB, EF617B
+
+; The Past (it's just pokey's speech lol)
+;      E17PAST
+past = C57E1C, C58000
+
+; Magicant
+;          E18MGKT
+magicant = C76F20, C77DCE
+
+; Moonside
+;          E19MOON
+moonside = C96D10, C97B6B
+
+
+; ==================== BATTLE ====================
+; This section is split further than the 10 EBATTLE files from the localisation.
+; In the localisation files, there's big comment headers before each "section" of text.
+; It'll be split roughly based on that.
+
+
+; Generic things
+; Pre-turn messages (eg. feeling funky), direct attacks, fleeing, etc.
+; Also put things here that didn't really belong anywhere else
+; EBATTLE0, EBATTLE5, EBATTLE6, EBATTLE8
+battle_generic = EF843F, EF8543, EF89E0, EF89FE, EF6F8E, EF6F9A, C8F935, C8FAAA, EF77FD, EF7858
+
+; Using PSI
+; EBATTLE0, EBATTLE6
+battle_psi = EF8543, EF89E0, C8FAAA, C8FB1B
+
+; Enemy attacks
+; EBATTLE1-3
+battle_enemy = EF9A47, EF9EF4, EF7E25, EF843F, EF89FE, EF8FAD
+
+; Status effect
+; EBATTLE4 and EBATTLE5
+; Includes status during turn, status on, status off, and some misc stuff scattered around
+battle_status = EF7186, EF72F6, EF6A99, EF6B43, EF6B81, EF6C6B, EF6E4A, EF6F8E, EF7123, EF7160
+
+; Special events
+; Runaway Five, Poo's return, Fly Honey, etc
+; EBATTLE4 and EBATTLE6
+battle_event = EF72F6, EF745F, C8F8C0, C8F935, C8FB1B, C90000
+
+; NPC battlers
+; EBATTLE4
+battle_npc = EF745F, EF75AB
+
+; Taking damage
+; EBATTLE4
+battle_hit = EF75AB, EF77FD
+
+; Stats
+; I decided to merge the "recovery" and "check" sections because they're both pretty small on their own
+; Also includes stat changes
+; EBATTLE5, EBATTLE6, EBATTLE8
+battle_stats = EF69A1, EF6A99, C8F77D, C8F8C0, EF7DD5, EF7E25
+
+; Enemy and player deaths
+; EBATTLE5
+battle_defeat = EF6C6B, EF6E4A
+
+; Shields
+; EBATTLE5
+; Includes Franklin Badge, moved Neutralizer and Mirror stuff to status
+battle_shield = EF6F9A, EF7123, EF7160, EF7186
+
+; Giygas
+; EBATTLE7
+; I won't prefix it with "battle_" because he doesn't speak outside of battle either
+giygas = C9EE2F, C9F897
+
+; Battle introduction
+; EBATTLE8
+battle_begin = EF7858, EF79D7
+
+; Battle conclusion
+; EBATTLE8, EBATTLE9
+; EBATTLE9 contains the script for the logic behind "exp. each"
+battle_end = EF79D7, EF7DD5, EF8FAD, EF8FCB
+
+; Scripted battles
+; EBATTLE9
+battle_scripted = EF8FCB, EF952E
+
+
+; ==================== CHECKABLE MAP OBJECTS ====================
+;               EBGMESS
+check_objects = C86279, C88000
+
+
+; ==================== DEBUG ====================
+;       EDEBUG
+debug = C58000, C5B3BA
+
+
+; ==================== EVENTS ====================
+;       EEVENT0         EEVENT1         EEVENT2         EEVENT3         EEVENT4         EEVENT5
+event = C5E5BC, C60000, C78000, C7A2F7, C88000, C89E1B, C91C3A, C93853, C7A2F7, C7C588, C9B226, C9C991
+
+
+; ==================== HELP TEXT ====================
+; Item help! text
+;           EEXPLGDS
+item_help = C53711, C56DF3
+
+; PSI descriptions
+;                  EEXPLPSI
+psi_descriptions = EF4E20, EF57EB
+
+
+; ==================== EGLOBAL ====================
+; TODO: sort this. There's some system stuff here,
+; but also a ton of random dialogue.
+; I wonder if this is the earliest dialogue they wrote?
+; Anyway, it should all be sorted into its respective areas.
+;              EGLOBAL
+misc_eglobal = C68000, C6A9F9
+
+
+; ==================== GOODS ====================
+;       EGOODS0         EGOODS1         EGOODS2          EGOODS3         EGOODS4
+goods = C97B6B, C98000, C9F897, C9FF30, EF9EF4,  EFA37A, C6F8D9, C70000, C77DCE, C78000
+
+
+; ==================== HINT GUY ====================
+;       EHINT
+hints = C70000, C72709
+
+
+; ==================== NEWSPAPERS ====================
+;      ENEWS
+news = C841DE, C86279
+
+
+; ==================== SHOPS ====================
+; Done my best here to separate shop dialogue and shop system
+
+; dialogue
+;       ESHOP0          ESHOP1
+shop_dialogue = C50000, C53711, C5B3BA, C5D24B
+
+; shop init for NPCs
+;           ESHOP1
+shop_init = C5D24B, C5D5AB
+
+; shop trees
+;            ESHOP1
+shop_trees = C5D5AB, C5D835
+
+; shop system
+;          ESHOP1
+shop_sys = C5D835, C5D844, C5DECB, C5E5BC
+
+; for-sale sign
+;               ESHOP1
+for_sale_sign = C5D844, C5DECB
+
+; shop misc
+; returns, HHV self-service shop, etc
+;
+shop_misc = C64DD0, C65243
+
+
+; ==================== HOSPITALS ====================
+; incl. healers, phase distorter, etc
+;           ESHOP2
+hospitals = C90000, C90339, C90FEC, C91582, C916A3, C91C3A
+
+
+; ==================== HOTELS ====================
+;        ESHOP2
+hotels = C90339, C90FEC, C91582, C916A3
+
+
+; ==================== ATM ====================
+; incl. D Spencer, etc
+;     ESHOP3
+atm = C62D30, C63029, C65243, C659BF
+
+
+; ==================== PHONE ====================
+;       ESHOP3
+phone = C63029, C636E5
+
+
+; ==================== DELIVERY ====================
+; Escargo and Mach Pizza
+;          ESHOP3
+delivery = C636E5, C64DD0, C659BF, C659C9
+
+
+; ==================== SYSTEM ====================
+;        ESYSTEM
+system = C7C588, C7E797
+
+; ==================== CURIOS ====================
+; Tests, cut content, accidentally-missed comments, etc
+; TODO! add more!
+;        Gender test
+;        EBATTLE5
+curios = EF6B43, EF6B81
