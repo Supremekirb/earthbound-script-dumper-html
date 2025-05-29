@@ -72,8 +72,15 @@ class ScriptDumper(object):
 
         if addr not in self.symbols:
             self.add_new_label(addr)
+            
+        for r, f in self.groups.items():
+            if addr in r:
+                file = self.files[f]
+                break
+        else:
+            file = self.dummyfile
 
-        return '<a class="label-link" href="#${:06X}">{}</a>'.format(addr, self.symbols[addr].label)
+        return '<a class="label-link" href="{}#${:06X}">{}</a>'.format(file.name, addr, self.symbols[addr].label)
 
     def read_flag(self):
         flag_id = self.read_int(2)
@@ -682,10 +689,10 @@ def run(dumper):
         print('Building text dictionary...')
         dumper.build_dictionary()
 
-    print('Resolving labels...')
-    dumper.resolve_labels()
     print('Opening output files...')
     dumper.populate_outfiles()
+    print('Resolving labels...')
+    dumper.resolve_labels()
     print('Dumping text script...')
     dumper.dump_text_script()
     print('Done!')
