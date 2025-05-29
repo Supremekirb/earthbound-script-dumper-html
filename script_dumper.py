@@ -44,6 +44,7 @@ class ScriptDumper(object):
         # TODO I wasn't sure where this would need to be recalc'd
         # so I just kinda threw it everywhere before writing to the file in the dump function
         # soooooooo... it's slow now! :3
+        # There's gotta be a better way to map ranges to values.
         for r, f in self.groups.items():
             if self.snes_address in r:
                 return self.files[f]
@@ -508,7 +509,6 @@ class ScriptDumper(object):
 
             while self.address < end:
                 snes_addr = self.snes_address
-                file = self.get_file_to_write()
                 if snes_addr in self.symbols:
                     file.write('</section>')
                     file.write('<section id=${:06X}>\n'.format(snes_addr))
@@ -531,8 +531,9 @@ class ScriptDumper(object):
                     file.write(self.translate_chr(c))
                 elif 0x15 <= c <= 0x17 and self.version != RomVersion.JP:
                     dict_base = (c - 0x15) * 256
-                    file = self.get_file_to_write()
-                    file.write(self.dictionary[dict_base + self.read_int(1)])
+                    k = dict_base + self.read_int(1)
+                    file = self.get_file_to_write()                    
+                    file.write(self.dictionary[k])
                 else:
                     to_write = self.get_script_code_string(c)
                     file = self.get_file_to_write()
