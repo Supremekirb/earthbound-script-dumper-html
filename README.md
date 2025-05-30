@@ -20,12 +20,12 @@ Where:
 Allows the dumper to output into several files based on address ranges. The syntax is.
 
 `FILENAME = START, END[, START, END...]`
-(*e.g.* `onett = C80000, C875EF, EF340B, EF3600`
+(*e.g.* `onett = C80000, C875EF, EF340B, EF3600`)
 A filename may only contain numbers, letters, and underscores (`_`)
 
 A semicolon (`;`) can also be used to start a comment. 
 
-This repository contains a groupz file for the US version at `groups/groups_US.txt`.
+This repository contains a groups file for the US version at `groups/groups_US.txt`.
 
 ## Symbol files
 Symbol files allow for an even more readable text dump by defining labels and comments. The general syntax for those files is the following:
