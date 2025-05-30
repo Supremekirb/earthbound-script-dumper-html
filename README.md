@@ -13,13 +13,13 @@ To run, simply use the following command on the command line:
 
 Where:
 - `earthbound_rom` is the filepath to an Earthbound or Mother 2 ROM
-- `groupd_file` is the filepath to a file containing info on how to split data into multiple files (see below)
+- `groups_file` is the filepath to a file containing info on how to split data into multiple files (see below)
 - `symbols_file` is an optional filepath to a file containing symbol definitions (see below)
 
 ## Group files
 Allows the dumper to output into several files based on address ranges. The syntax is.
 
-`FILENAME = START, END[, START, END...]
+`FILENAME = START, END[, START, END...]`
 (*e.g.* `onett = C80000, C875EF, EF340B, EF3600`
 A filename may only contain numbers, letters, and underscores (`_`)
 
